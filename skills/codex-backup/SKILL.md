@@ -109,6 +109,18 @@ backup: skills/ を一括更新
 
 ## Step 4: Confirm Backup Scope
 
+確認が必要な場合は、plan モードと同じ構造化質問を優先する。つまり `request_user_input` が使える環境では、自由入力の plain text ではなく、短い選択肢つきの確認 UI を使う。
+
+確認 UI の原則:
+
+- 質問は 1 回につき 1 件を基本にする
+- 選択肢は 2 から 3 個に絞る
+- 推奨案を先頭に置き、`(Recommended)` を付ける
+- `commit` と `push` は必ず別々に確認する
+- 対象ファイル、除外ファイル、message、push 先など判断に必要な要約を質問の直前に示す
+
+`request_user_input` が使えない環境だけ、通常のテキスト確認にフォールバックする。
+
 commit 前に以下を表示して確認する。
 
 ```text
@@ -118,16 +130,25 @@ commit 前に以下を表示して確認する。
 
 コミットメッセージ:
   backup: ...
+```
 
+`commit` 確認の選択肢例:
+
+- `Commit now (Recommended)`: 表示した対象ファイルと message で commit する
+- `Edit message`: message を調整して再確認する
+- `Review files`: 対象ファイルを見直す
+
+commit 後は push 先を明示して、push 実行前に再確認する。
+
+```text
 push 先: origin/<branch> (uta-a/codex-config)
 ```
 
-選択肢として最低限残すこと:
+`push` 確認の選択肢例:
 
-- commit と push を行う
-- commit のみ行う
-- メッセージを修正する
-- 中止する
+- `Push now (Recommended)`: 現在の commit を `uta-a/codex-config` へ push する
+- `Commit only`: push せず、ローカル commit のみで止める
+- `Cancel`: ここで止める
 
 ## Step 5: Execute
 

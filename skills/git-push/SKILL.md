@@ -151,6 +151,18 @@ body を付ける目安:
 
 commit と push は別確認にする。
 
+確認が必要な場合は、plan モードと同じ構造化質問を優先する。つまり `request_user_input` が使える環境では、自由入力の plain text ではなく、短い選択肢つきの確認 UI を使う。
+
+確認 UI の原則:
+
+- 質問は 1 回につき 1 件を基本にする
+- 選択肢は 2 から 3 個に絞る
+- 推奨案を先頭に置き、`(Recommended)` を付ける
+- `commit` と `push` は必ず別々に確認する
+- 対象ファイルや commit message など、判断に必要な要約を質問の直前に示す
+
+`request_user_input` が使えない環境だけ、通常のテキスト確認にフォールバックする。
+
 まず表示する内容:
 
 ```text
@@ -168,6 +180,12 @@ commit と push は別確認にする。
 - メッセージ修正の選択肢を残す
 - 対象ファイルの再選択が必要なら戻れるようにする
 
+`commit` 確認の選択肢例:
+
+- `Commit now (Recommended)`: 表示した対象ファイルと message で commit する
+- `Edit message`: message を調整して再確認する
+- `Review files`: 対象ファイルを見直して Step 2 に戻る
+
 commit 後は push 先の remote / branch / 保護ブランチ警告を示して、push 実行前に再確認する。
 
 保護ブランチとして特に警告する候補:
@@ -176,6 +194,12 @@ commit 後は push 先の remote / branch / 保護ブランチ警告を示して
 - `release/*`, `release-*`
 - `develop`, `development`
 - `production`, `staging`
+
+`push` 確認の選択肢例:
+
+- `Push now (Recommended)`: 現在の commit を表示先へ push する
+- `Commit only`: push せず、ローカル commit のみで止める
+- `Cancel`: ここで止める
 
 ## Step 6: Execute
 

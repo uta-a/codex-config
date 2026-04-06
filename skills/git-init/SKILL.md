@@ -78,6 +78,23 @@ git branch --show-current
 
 公開前に、提案した repo 名と公開設定が `public` か `private` かをユーザーに確認する。明示指定がなければ `public` を既定とする。
 
+この確認は `request_user_input` が使える環境では、plan モードと同じ構造化質問を使う。plain text の自由入力は優先しない。
+
+確認 UI の原則:
+
+- 質問は 1 回につき 1 件を基本にする
+- 選択肢は 2 から 3 個に絞る
+- 推奨案を先頭に置き、`(Recommended)` を付ける
+- repo 名と公開設定は判断に必要な要約を直前に示す
+
+repo 名と公開設定の確認例:
+
+- `Create public repo (Recommended)`: 提案名で公開 repo を作る
+- `Create private repo`: 提案名で private repo を作る
+- `Edit settings`: repo 名または公開設定を見直す
+
+`request_user_input` が使えない環境だけ、通常のテキスト確認にフォールバックする。
+
 ## Step 3: Prepare `.gitignore`
 
 `.gitignore` の状態に応じて:
@@ -147,6 +164,12 @@ git branch -M main
 
 を表示して確認する。既定の初回コミットメッセージは `initial commit` でよいが、README や `.gitignore` だけの補完なら内容に合わせて短く調整してよい。
 
+この確認も `request_user_input` を優先し、少なくとも以下の選択肢を出す:
+
+- `Commit now (Recommended)`: 表示した内容で commit する
+- `Edit message`: コミットメッセージを調整して再確認する
+- `Review files`: 対象ファイルを見直す
+
 ## Step 6: Create GitHub Repo and Push
 
 remote 状態に応じて分岐する。
@@ -157,6 +180,14 @@ remote 状態に応じて分岐する。
 - `origin` がなく別 remote のみある: GitHub repo を作成して `origin` として追加する案を出す
 
 GitHub 側の作成や push は外部副作用なので、実行直前に必ず確認する。
+
+この確認も `request_user_input` を優先し、commit と GitHub 側の外部操作を混同しない。
+
+GitHub repo 作成と push の確認例:
+
+- `Create repo and push (Recommended)`: 表示した repo 名、公開設定、remote、branch で実行する
+- `Commit only`: ローカル commit だけで止める
+- `Cancel`: ここで止める
 
 ## Failure Handling
 

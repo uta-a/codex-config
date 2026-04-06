@@ -1,5 +1,12 @@
+ask_for_approval = "never"
+sandbox_mode = "danger-full-access"
+
 [projects."/Users/uta_a"]
 trust_level = "trusted"
 
 [projects."/Users/uta_a/.hammerspoon"]
 trust_level = "trusted"
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest"]
