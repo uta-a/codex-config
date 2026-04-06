@@ -109,19 +109,19 @@ backup: skills/ を一括更新
 
 ## Step 4: Confirm Backup Scope
 
-確認が必要な場合は、plan モードと同じ構造化質問を優先する。つまり `request_user_input` が使える環境では、自由入力の plain text ではなく、短い選択肢つきの確認 UI を使う。
+backup は `commit` と `push` をまとめて 1 回で確認する。`request_user_input` が使える環境では、自由入力の plain text ではなく短い選択肢つきの確認 UI を使う。
 
 確認 UI の原則:
 
-- 質問は 1 回につき 1 件を基本にする
+- 質問は 1 回につき 1 件にする
 - 選択肢は 2 から 3 個に絞る
 - 推奨案を先頭に置き、`(Recommended)` を付ける
-- `commit` と `push` は必ず別々に確認する
 - 対象ファイル、除外ファイル、message、push 先など判断に必要な要約を質問の直前に示す
+- `commit` と `push` をまとめて実行する案と、`commit` のみで止める案を同じ確認内で出す
 
-`request_user_input` が使えない環境だけ、通常のテキスト確認にフォールバックする。
+`request_user_input` が使えない実行モードでは、通常のテキスト確認にフォールバックする。
 
-commit 前に以下を表示して確認する。
+確認前に以下を表示する。
 
 ```text
 --- backup 内容 ---
@@ -130,25 +130,18 @@ commit 前に以下を表示して確認する。
 
 コミットメッセージ:
   backup: ...
+
+push 先:
+  origin/<branch> (uta-a/codex-config)
 ```
 
-`commit` 確認の選択肢例:
+確認の選択肢例:
 
-- `Commit now (Recommended)`: 表示した対象ファイルと message で commit する
-- `Edit message`: message を調整して再確認する
-- `Review files`: 対象ファイルを見直す
+- `Commit and push (Recommended)`: 表示した対象ファイルと message で commit し、そのまま `uta-a/codex-config` へ push する
+- `Commit only`: ローカル commit のみ作成して止める
+- `Review files`: 対象ファイルまたは message を見直す
 
-commit 後は push 先を明示して、push 実行前に再確認する。
-
-```text
-push 先: origin/<branch> (uta-a/codex-config)
-```
-
-`push` 確認の選択肢例:
-
-- `Push now (Recommended)`: 現在の commit を `uta-a/codex-config` へ push する
-- `Commit only`: push せず、ローカル commit のみで止める
-- `Cancel`: ここで止める
+`request_user_input` の質問は、直前に上の要約を表示してから出す。
 
 ## Step 5: Execute
 
