@@ -1,11 +1,11 @@
 ---
 name: codex-backup
-description: Back up `~/.codex/` configuration and custom skills to the GitHub `codex-config` repository with a `backup:` commit message, after checking git state and excluding sensitive files by default. Use for requests like "Codex設定をバックアップ", "configを保存", "codex-configに反映", or "設定変更をpushしたい".
+description: Back up `~/.codex/` configuration, custom skills, and `/Users/uta_a/AGENTS.md` (synced into `~/.codex/AGENTS.md`) to the GitHub `codex-config` repository with a `backup:` commit message, after checking git state and excluding sensitive files by default. Use for requests like "Codex設定をバックアップ", "configを保存", "codex-configに反映", or "設定変更をpushしたい".
 ---
 
 # Codex Backup
 
-`~/.codex/` 配下の設定や custom skills を、GitHub の `codex-config` リポジトリへ commit と push するための skill。
+`~/.codex/` 配下の設定や custom skills に加えて、`/Users/uta_a/AGENTS.md` を `~/.codex/AGENTS.md` に同期した上で、GitHub の `codex-config` リポジトリへ commit と push するための skill。
 
 この skill は汎用 `git-push` ではなく、対象ディレクトリ、コミット prefix、機密ファイル除外方針を固定したバックアップ専用フローを担当する。
 
@@ -35,6 +35,12 @@ git -C ~/.codex status --short --branch
 
 ## Step 1: Detect and Classify Changes
 
+最初に `/Users/uta_a/AGENTS.md` が存在する場合は、その内容を `~/.codex/AGENTS.md` に同期してから差分確認に進む。
+
+```bash
+test -f /Users/uta_a/AGENTS.md && cp /Users/uta_a/AGENTS.md ~/.codex/AGENTS.md
+```
+
 ```bash
 git -C ~/.codex status --porcelain
 ```
@@ -47,7 +53,7 @@ git -C ~/.codex status --porcelain
 
 ```text
 --- ~/.codex 変更状況 ---
-更新 (2):   config.toml, skills/git-push/SKILL.md
+更新 (2):   config.toml, AGENTS.md
 追加 (1):   skills/codex-backup/SKILL.md
 削除 (0):   なし
 ```
@@ -74,7 +80,7 @@ git -C ~/.codex status --porcelain
 - `*.pem`, `*.key`, `*.p12`, `*.pfx`
 - API キーやトークンを含む diff
 
-特に `config.toml` や custom skills の diff は、秘密情報を直書きしていないか確認する。
+特に `config.toml`、`AGENTS.md`、custom skills の diff は、秘密情報を直書きしていないか確認する。
 
 警告時の原則:
 
@@ -95,6 +101,7 @@ backup: <変更の要約>
 
 - `backup: config.toml を更新`
 - `backup: skills/git-push と AGENTS.md を更新`
+- `backup: AGENTS.md と notify 設定を更新`
 - `backup: skills/ を一括更新`
 
 変更ファイルが多い場合だけ body を付ける。
@@ -145,9 +152,10 @@ push 先:
 
 ## Step 5: Execute
 
-対象ファイルだけを明示的に add する。
+`AGENTS.md` を含める場合は、commit 前に同期を済ませた上で、対象ファイルだけを明示的に add する。
 
 ```bash
+test -f /Users/uta_a/AGENTS.md && cp /Users/uta_a/AGENTS.md ~/.codex/AGENTS.md
 git -C ~/.codex add <file1> <file2> ...
 git -C ~/.codex commit -m "<message>"
 git -C ~/.codex push
