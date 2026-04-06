@@ -1,5 +1,6 @@
 ask_for_approval = "never"
 sandbox_mode = "danger-full-access"
+notify = ["/Users/uta_a/.codex/bin/codex-notify-macos.sh"]
 
 [projects."/Users/uta_a"]
 trust_level = "trusted"
@@ -12,4 +13,6 @@ command = "npx"
 args = ["-y", "@playwright/mcp@latest"]
 
 [tui]
+notifications = ["agent-turn-complete"]
+notification_method = "auto"
 status_line = ["model-with-reasoning", "context-remaining", "current-dir", "git-branch", "five-hour-limit"]
