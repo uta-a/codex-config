@@ -1,67 +1,65 @@
-# User Context
-
+## ユーザー情報
 - GitHub: uta-a
-- The user is still learning programming, so prefer concrete examples when explaining non-trivial changes.
+- プログラミング学習中の学生
+- 非自明な変更を説明する際は具体例を添える
 
-# Communication Style
+## 回答スタイル
+- 指摘すべきことは率直に指摘する
+- 説明には具体例を含める
+- 要件が曖昧でリポジトリに残る変更に影響する場合は、実装前に質問して確認する
+- 選択肢を提示する際は必ず番号を振る
 
-- Be direct about mistakes, risks, and weak assumptions.
-- Include concrete examples when they make an explanation clearer.
-- If requirements are ambiguous and the ambiguity would materially affect implementation, ask before making repo-tracked changes.
-- When presenting options to the user, always number them.
+## 言語・出力
+- GitHub上の文章（Issue、PR、コミットメッセージ）は原則日本語。外部公開・英語話者との協業では英語可
+- 明示的に指定された場合を除き、プレーンテキストを優先する。ただしREADME・設計書・Issueテンプレート等はMarkdown可
 
-# Language
+## 技術スタック（デフォルト）
+- React + TypeScript + Vite
+- スタイリング: Tailwind CSS
+- テスト: Jest + React Testing Library
+- アイコン: Google Fonts Icons, Boxicons等の外部リソース
+- プロジェクト固有の構成がある場合はそちらを優先する
 
-- Default to Japanese for GitHub-facing writing such as issues, pull requests, and commit messages.
-- Use English only when the work is externally published or explicitly intended for English-speaking collaborators.
-- Prefer plain text unless Markdown is the natural format, such as for README files, design docs, or issue templates.
+## 開発方針
+- 正確性 > 保守性 > 実装速度
+- 既存の設計・命名・実装パターンを尊重し、不要な新規流儀を持ち込まない
+- 無関係なリファクタリングを変更に混ぜない
+- リクエストされた成果に集中する
 
-# Default Stack
+## 開発ワークフロー
+- 新機能: 計画作成 → プランレビュー → 指摘反映 → TDD ループで実装（失敗テスト → 実装 → テスト通過）→ コードレビュー
+- バグ修正: 再現テストを先に書く → 修正 → コードレビュー
+- リファクタリング: goal / non-goals / safety checks を明文化 → 計画作成 → プランレビュー → 指摘反映 → クリーンアップ実施 → コードレビュー
+- 大規模設計: 設計書作成 → プランレビュー → 指摘反映 → 段階的実装 → コードレビュー
+- プランレビュー手続き: 実質的な計画・設計を作成した後、ユーザー承認を求める前に必ず実施する
+  - 独立したレビュー手段が利用可能なら必ず使う（別サブエージェントでの批判的読み直し、別セッションでの再読み込み、plan-reviewer 相当の専用ツールなど、計画作成者とは別のコンテキストで点検できる手段）
+  - 独立レビューが利用不能な場合のみ自己レビューにフォールバックしてよい。その場合はフォールバックした旨と理由をユーザー向け報告に明記する
+  - レビュー観点チェックリスト: (a) 要件との整合性、(b) 実現性・技術的前提の妥当性、(c) 欠落セクション/ステップ、(d) 受け入れ基準の客観性
+  - 重大な指摘は反映してから次工程へ進む
+  - 不採用の指摘は理由を残す
+  - レビュー結果と指摘反映内容をユーザーに提示してから承認を求める
+- ビルドエラー対応: エラーログ全体を読む → 最上流の失敗を特定 → 根本原因（型定義/依存バージョン/ビルド設定）を推定 → 最小差分で修正 → 関連テストを再実行
+- UI・デザイン: `~/.claude/design-rules.md` を作業開始前に必読し、蓄積されたルールに従う。プロジェクトでデザイン改善を行った際は、得られた知見・ルールを同ファイルに追記する
+  - 現在永続化されているルール: `border-l-2` など左だけ太いボーダーをカードやリスト項目に付けない
 
-- For greenfield or proposal work, default to React + TypeScript + Vite.
-- Default styling choice: Tailwind CSS.
-- Default test stack: Jest + React Testing Library.
-- Default icon sources may include external resources such as Google Fonts Icons or Boxicons.
-- If the project already has an established stack, conventions, or tooling, follow those instead of these defaults.
+## テスト
+- テストファーストを原則とする
+- バグ修正は再現テストを先に書いてから修正する
+- カバレッジ値だけでなく、重要ユースケースの回帰防止を重視する
+- カバレッジ目標: 80%以上を目安とする
 
-# Development Principles
+## セキュリティ
+- フォーム、API、認証、権限設計、入力検証、環境変数、依存パッケージ更新に関わる実装ではセキュリティレビューを実施する（脅威洗い出し → 入力境界チェック → 権限/認証経路確認 → 依存脆弱性確認）
+- セキュリティリスクや欠落バリデーションは明示的に指摘する
 
-- Prioritize correctness over maintainability, and maintainability over implementation speed.
-- Respect existing architecture, naming, and implementation patterns.
-- Do not introduce unrelated refactors into the same change.
-- Keep changes focused on the requested outcome.
+## Git / GitHub
+- 1機能・1修正ごとにコミット
+- ブランチ命名: `feat/機能名`, `fix/修正内容`, `docs/対象`, `refactor/対象`
 
-# Workflow
+## 調査・分析
+- 広範なコードベース調査、既存パターン探索、設計比較、技術調査では Codex CLI を優先的に活用する
+- ライブラリ・フレームワークのドキュメントは公式ドキュメントを参照する
 
-- For new features, create or confirm a plan before implementation when the work is non-trivial.
-- For bug fixes, identify the failure condition first and prefer adding a reproduction test before the fix when practical.
-- For refactoring, clarify the goal, non-goals, and safety checks before changing code.
-- For large design or architecture changes, break the work into reviewable stages before implementation.
-- Before asking for approval on a substantial plan, incorporate review feedback when available and note any important rejected suggestions with reasons.
-
-# Testing
-
-- Prefer test-first development when practical.
-- For bug fixes, prioritize regression coverage for the reproduced failure.
-- Value meaningful coverage of important user flows over coverage percentage alone.
-- Treat 80% coverage as a guideline, not a hard rule.
-
-# Security
-
-- Apply extra scrutiny to work involving forms, APIs, authentication, authorization, input validation, environment variables, or dependency updates.
-- Call out security risks and missing validation explicitly.
-
-# Git / GitHub
-
-- Prefer one commit per feature or fix when the user asks for commits.
-- Use branch names in the style of `feat/<name>`, `fix/<name>`, `docs/<name>`, and `refactor/<name>`.
-
-# Research
-
-- For broad codebase investigation, existing pattern discovery, design comparison, or technical research, prefer Codex CLI exploration first.
-- When using external library or framework documentation, consult authoritative docs.
-
-# Design Work
-
-- When doing UI or design work, also consult `/Users/uta_a/.claude/design-rules.md`.
-- Current persisted design rule: avoid left-only thick borders on cards or list items, such as `border-l-2`.
+## セッション・学習
+- 長時間タスクでは「作業ログ・未完了TODO・検証結果・次アクション」をファイルに書き出して保存し、再開時に復元できるようにする
+- タスク完了後は学んだパターンや失敗原因を抽出して次回に活かす

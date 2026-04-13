@@ -1,6 +1,11 @@
 ask_for_approval = "never"
 sandbox_mode = "danger-full-access"
 notify = ["/Users/uta_a/.codex/bin/codex-notify-macos.sh"]
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
+# ===== BEGIN ECC managed top-level =====
+web_search = "live"
+# ===== END ECC managed top-level =====
 
 [projects."/Users/uta_a"]
 trust_level = "trusted"
@@ -8,11 +13,86 @@ trust_level = "trusted"
 [projects."/Users/uta_a/.hammerspoon"]
 trust_level = "trusted"
 
+[projects."/Users/uta_a/Projects/codex/wikigacha"]
+trust_level = "trusted"
+
 [mcp_servers.playwright]
 command = "npx"
 args = ["-y", "@playwright/mcp@latest"]
+
+[mcp_servers.playwright.tools.browser_evaluate]
+approval_mode = "approve"
+
+[mcp_servers.playwright.tools.browser_click]
+approval_mode = "approve"
+
+[mcp_servers.playwright.tools.browser_navigate]
+approval_mode = "approve"
+
+[mcp_servers.playwright.tools.browser_resize]
+approval_mode = "approve"
 
 [tui]
 notifications = ["agent-turn-complete"]
 notification_method = "auto"
 status_line = ["model-with-reasoning", "context-remaining", "current-dir", "git-branch", "five-hour-limit"]
+
+# ===== BEGIN ECC managed block =====
+
+[mcp_servers.github]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-github"]
+startup_timeout_sec = 30
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp@latest"]
+startup_timeout_sec = 30
+
+[mcp_servers.exa]
+url = "https://mcp.exa.ai/mcp"
+
+[mcp_servers.memory]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-memory"]
+startup_timeout_sec = 30
+
+[mcp_servers.sequential-thinking]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+startup_timeout_sec = 30
+
+[features]
+# ECC では Codex 現行ビルドで multi_agent が既定 ON とされるが、
+# Codex 側の既定変更に対する保険として明示的に true を残す。
+multi_agent = true
+
+# Profiles — `codex -p strict` / `codex -p yolo` で top-level を上書き適用。
+# 明示指定しない限りユーザーの既定（ask_for_approval="never" + danger-full-access）が有効。
+[profiles.strict]
+approval_policy = "on-request"
+sandbox_mode = "read-only"
+web_search = "cached"
+
+[profiles.yolo]
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+web_search = "live"
+
+[agents]
+max_threads = 6
+max_depth = 1
+
+[agents.explorer]
+description = "Read-only codebase explorer for gathering evidence before changes are proposed."
+config_file = "agents/explorer.toml"
+
+[agents.reviewer]
+description = "PR reviewer focused on correctness, security, and missing tests."
+config_file = "agents/reviewer.toml"
+
+[agents.docs_researcher]
+description = "Documentation specialist that verifies APIs, framework behavior, and release notes."
+config_file = "agents/docs-researcher.toml"
+
+# ===== END ECC managed block =====

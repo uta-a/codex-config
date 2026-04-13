@@ -5,6 +5,8 @@ state_*.sqlite
 *.sqlite-shm
 *.sqlite-wal
 sessions/
+archived_sessions/
+session_index.jsonl
 log/
 tmp/
 .tmp/
